@@ -9,112 +9,98 @@ Posttest ini digunakan untuk mengukur pemahaman peserta setelah mempelajari Vali
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk memvalidasi request yang diminta```
 
 ### 2. Kenapa backend tetap perlu validasi walaupun frontend sudah validasi?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+menjaga keamanan```
 
 ### 3. Apa fungsi @Valid?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk memvalidasi request body```
 
 ### 4. Apa fungsi @NotBlank?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk agar tidak null```
 
 ### 5. Apa perbedaan @NotBlank dan @NotNull?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+notnull itu wajib diisi```
 
 ### 6. Apa fungsi @Email?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+@email itu untuk validasi email nya apakah well-written atau tidak```
 
 ### 7. Apa fungsi @Size?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk mengatur minimum dan maximum char```
 
 ### 8. Apa yang terjadi jika request gagal validasi?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+ada error response```
 
 ### 9. Apa itu MethodArgumentNotValidException?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+args nya tidak valid```
 
 ### 10. Apa itu standard error response?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+400,500```
 
 ### 11. Kenapa error response perlu konsisten?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+agar memberikan jawaban yang konsisten bagi client```
 
 ### 12. Apa itu field-level error?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+error pada level fieldnya seperti fullname dkk```
 
 ### 13. Apa itu custom exception?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+exception yg di custom response exceptionnya```
 
 ### 14. Kenapa CustomerNotFoundException lebih baik daripada RuntimeException biasa?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+lebih spesifik daripada bawaan```
 
 ### 15. Apa fungsi @ControllerAdvice?
 
@@ -129,40 +115,35 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk menghandle exception```
 
 ### 17. Kenapa error handling sebaiknya centralized?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+supaya tidak redundan```
 
 ### 18. Kapan menggunakan 400 Bad Request?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+apabila inputannya gak sesuai tipe data```
 
 ### 19. Kapan menggunakan 404 Not Found?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+ketika GET tidak ada yang diinput```
 
 ### 20. Kapan menggunakan 500 Internal Server Error?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+ketika ada salah pada code```
 
 ### 21. Kenapa stack trace tidak boleh dikirim ke client?
 
@@ -177,52 +158,47 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+biasanya ada error seperti 500```
 
 ### 23. Jelaskan flow ketika GET /api/v1/customers/999 tidak menemukan data.
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+kalau tidak ada data 404 not found```
 
 ### 24. Apa perbedaan validation error, business error, dan system error?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+valid error itu ketika disebabkan oleh validitas, business itu logis nya, sistem itu kdoe```
 
 ### 25. Bagian mana yang paling sulit dari exercise Day 2?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+semuanyaaaa```
 
 ## Reflection
 
 Apa 3 hal utama yang kamu pahami hari ini?
 
 ```text
-1.
-2.
-3.
+1. error
+2. exception
+3. handling
 ```
 
 Apa 2 hal yang masih membingungkan?
 
 ```text
-1.
-2.
+1. error handling
+2. exception handling
 ```
 
 Apa 1 pertanyaan untuk mentor?
 
 ```text
-Tulis pertanyaan di sini.
-```
+sabar-sabar pak menghadapi saya.```
