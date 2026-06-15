@@ -18,7 +18,7 @@ Pretest ini digunakan untuk mengukur pemahaman awal peserta tentang validasi req
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+Untuk memvalidasi request dari client ke server
 ```
 
 ### 2. Kenapa backend tetap perlu melakukan validasi walaupun frontend sudah melakukan validasi?
@@ -26,7 +26,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+Untuk memperketat security
 ```
 
 ### 3. Apa risiko jika API menerima data kosong atau format data yang salah?
@@ -34,7 +34,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+Kemungkinan ngehit berkali2 namun sia2
 ```
 
 ### 4. Sebutkan contoh validasi untuk field full_name.
@@ -42,7 +42,8 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+kalau setau saya di java kayak mismatch exception jadi misal variable fieldnya adalah String tapi
+inputannya int dia bakal error
 ```
 
 ### 5. Sebutkan contoh validasi untuk field email.
@@ -50,7 +51,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+misal tanpa @ bakal invalid
 ```
 
 ### 6. Sebutkan contoh validasi untuk field phone_number.
@@ -58,7 +59,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+misalkan client masukinnya text semua
 ```
 
 ### 7. Apa perbedaan validasi teknis dan validasi bisnis?
@@ -66,7 +67,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+menurut sya validasi teknis ini lebih ke backend nya dan bisnis ini lebih ke money nya
 ```
 
 ## Section B - Bean Validation
@@ -76,7 +77,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+untuk validasi
 ```
 
 ### 9. Apa fungsi annotation @NotBlank?
@@ -84,15 +85,14 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+memastikan inputan tidak koosong```
 
 ### 10. Apa fungsi annotation @NotNull?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+untuk memvalidasi inputan tidak boleh kosong
 ```
 
 ### 11. Apa fungsi annotation @Email?
@@ -100,7 +100,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+untuk memberikan validasi email
 ```
 
 ### 12. Apa fungsi annotation @Size?
@@ -108,23 +108,21 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+untuk memastikan jumlah character```
 
 ### 13. Apa perbedaan @NotBlank dan @NotNull?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+notblank itu supaya tidak kosong, notnull supaya tidak null```
 
 ### 14. Di Spring Boot, validasi biasanya diletakkan di object apa?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+Field
 ```
 
 ## Section C - Error Handling
@@ -134,56 +132,49 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+Mengelola error```
 
 ### 16. Kenapa error response perlu dibuat konsisten?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+Agar transparan dengan user```
 
 ### 17. Apa risiko jika stack trace dikirim ke client?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+Client tidak tahu log errornya dmn```
 
 ### 18. Apa perbedaan HTTP status 400, 404, dan 500?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+kepala 4 itu bad request, kepala 5 itu internal server```
 
 ### 19. Kapan menggunakan 400 Bad Request?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+ketika inputan invalid```
 
 ### 20. Kapan menggunakan 404 Not Found?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+data nya gaada```
 
 ### 21. Kapan menggunakan 500 Internal Server Error?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+buat handle except```
 
 ## Section D - Exception
 
@@ -192,15 +183,14 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+try catch, throw exception itu pengeculian error```
 
 ### 23. Apa itu RuntimeException?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+jenis exception 
 ```
 
 ### 24. Apa itu custom exception?
@@ -208,24 +198,21 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+exception yang diatur oleh client```
 
 ### 25. Kenapa kita perlu membuat CustomerNotFoundException?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+membuat pengeculian kalau customer tidak ditemukan```
 
 ### 26. Apa perbedaan validation error, business error, dan system error?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+penyebab error, karena validitas tidak valid, karena logika bisnis, dan karena kode/sistem```
 
 ## Section E - Global Exception Handler
 
@@ -234,7 +221,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+membuat fungsi pada Controller
 ```
 
 ### 28. Apa itu @ExceptionHandler?
@@ -242,15 +229,14 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+mengelola exception```
 
 ### 29. Kenapa error handling sebaiknya tidak ditulis berulang di setiap Controller?
 
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
+supaya tidak redundan
 ```
 
 ### 30. Apa manfaat centralized error handling?
@@ -258,8 +244,7 @@ Tulis jawaban di sini.
 Jawaban:
 
 ```text
-Tulis jawaban di sini.
-```
+tidak redundan dan lebih mudah di kelola```
 
 ## Self Assessment
 
@@ -276,5 +261,4 @@ Tulis jawaban di sini.
 ## Notes
 
 ```text
-Tulis bagian yang masih membingungkan.
-```
+error handling dan exception in api```
