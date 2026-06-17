@@ -34,7 +34,7 @@ karena agar api itu tidak
 Jawaban:
 
 ```text
-schema validation```
+REQUIREMENT, CONTRACT DESIGN, IMPLEMENTATION, TESTING, SWAGGER VISIBILITY```
 
 ### 4. Apa itu endpoint?
 
