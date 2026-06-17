@@ -20,13 +20,14 @@ public class CreateCustomerRequest {
     @NotBlank
     @Size(min =  3, max = 100)
 
-    @JsonProperty
+    @JsonProperty("full_name")
     private String fullName;
     @NotNull
     @Email
     private String email;
     @NotNull
     @Min(10)
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
     public CreateCustomerRequest(@NotBlank @Size(min = 3, max = 100) String fullName, @NotNull @Email String email,

@@ -63,7 +63,7 @@ public class CustomerService {
         Customer kastomer = customerStorage.get(id);
 
         if(kastomer == null) {
-            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id:999 ", null);
+            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " +id, null);
         }
 
         CustomerResponse response = new CustomerResponse();
@@ -78,7 +78,7 @@ public class CustomerService {
         Customer kastomer = customerStorage.get(id);
 
         if(kastomer == null) {
-            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: 999", null);
+            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " + id, null);
         }
         kastomer.setFullName(entity.getFullName());
         kastomer.setEmail(entity.getEmail());
@@ -95,7 +95,7 @@ public class CustomerService {
     public CustomerResponse deleteCustomer(long id) throws CustomerNotFoundException {
     Customer kastomer = customerStorage.get(id);
         if (kastomer == null) {
-            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id:999 ", null);
+            throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " + id, null);
             // throw new CustomerNotFoundException(String.format("Customer not found with id: %s", id), null, null);
         }
 

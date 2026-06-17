@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomerNotFoundException.class)
     public ResponseEntity<ErrorResponse<Void>> notFound(CustomerNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.error("CUSTOMER_NOT_FOUND", "Customer not found with id:999",null));
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ErrorResponse.error("CUSTOMER_NOT_FOUND", ex.getMessage(),null));
     }
 
     @ExceptionHandler(Exception.class)
