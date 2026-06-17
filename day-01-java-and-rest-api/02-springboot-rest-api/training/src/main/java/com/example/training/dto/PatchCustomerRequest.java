@@ -1,4 +1,6 @@
 package com.example.training.dto;
+import java.time.ZonedDateTime;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
@@ -9,15 +11,19 @@ public class PatchCustomerRequest {
     private String email;
     @JsonProperty("phone_number")
     private String phoneNumber;
+    private ZonedDateTime createdAt;
+    private ZonedDateTime updatedAt;
 
-    public PatchCustomerRequest(String fullName, String email, String phoneNumber) {
+    public PatchCustomerRequest(String fullName, String email, String phoneNumber, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
         this.fullName = fullName;
         this.email = email;
         this.phoneNumber = phoneNumber;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
     }
-    // nah ini getter and setter 
+// nah ini getter and setter 
     public String getFullName() {
-        return fullName;
+    return fullName;
     }
     public void setFullName(String fullName) {
         this.fullName = fullName;
@@ -34,6 +40,17 @@ public class PatchCustomerRequest {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(ZonedDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public ZonedDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+    public void setUpdatedAt(ZonedDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
     
 }

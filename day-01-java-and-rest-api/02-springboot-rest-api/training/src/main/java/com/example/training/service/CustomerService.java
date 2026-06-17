@@ -31,6 +31,8 @@ public class CustomerService {
             customerResponse.setFullName(customer.getFullName());
             customerResponse.setEmail(customer.getEmail());
             customerResponse.setPhoneNumber(customer.getPhoneNumber());
+            customerResponse.setCreatedAt(customer.getCreatedAt());
+            customerResponse.setUpdatedAt(customer.getUpdatedAt());
 
             responses.add(customerResponse);
         }
@@ -40,7 +42,7 @@ public class CustomerService {
     // Method ini untuk membuat Customer baru berdasarkan data yang dikirim dari request.
     // Customer disimpan ke customerStorage, lalu dikembalikan sebagai CustomerResponse.
     public CustomerResponse createCustomer(@RequestBody CreateCustomerRequest entity) {
-        Customer newCustomer = new Customer(sequence, entity.getFullName(), entity.getEmail(), entity.getPhoneNumber());
+        Customer newCustomer = new Customer(sequence, entity.getFullName(), entity.getEmail(), entity.getPhoneNumber(), entity.getCreatedAt(), entity.getUpdatedAt());
         customerStorage.put(sequence, newCustomer);
         sequence++;
 
@@ -50,6 +52,8 @@ public class CustomerService {
         response.setFullName(newCustomer.getFullName());
         response.setEmail(newCustomer.getEmail());
         response.setPhoneNumber(newCustomer.getPhoneNumber());
+        response.setCreatedAt(newCustomer.getCreatedAt());
+        response.setUpdatedAt(newCustomer.getUpdatedAt());
 
         return response;
     }
@@ -69,6 +73,8 @@ public class CustomerService {
         response.setFullName(kastomer.getFullName());
         response.setEmail(kastomer.getEmail());
         response.setPhoneNumber(kastomer.getPhoneNumber());
+        response.setCreatedAt(kastomer.getCreatedAt());
+        response.setUpdatedAt(kastomer.getUpdatedAt());
         return response;
     }
 
@@ -81,7 +87,7 @@ public class CustomerService {
         }
         
         customerStorage.remove(id);
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber());
+        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
         return response;
     }
     public CustomerResponse updateCustomer(@PathVariable Long id, CreateCustomerRequest entity) throws CustomerNotFoundException {
@@ -93,10 +99,11 @@ public class CustomerService {
         kastomer.setFullName(entity.getFullName());
         kastomer.setEmail(entity.getEmail());
         kastomer.setPhoneNumber(entity.getPhoneNumber());
-
+        kastomer.setCreatedAt(entity.getCreatedAt());
+        kastomer.setUpdatedAt(entity.getUpdatedAt());
         customerStorage.put(id, kastomer);
 
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber());
+        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
 
         return response;
         
@@ -118,10 +125,16 @@ public class CustomerService {
         if(broski.getPhoneNumber() != null){
             kastomer.setPhoneNumber(broski.getPhoneNumber());
         }
+        if(broski.getCreatedAt() != null){
+            kastomer.setCreatedAt(broski.getCreatedAt());
+        }
+        if(broski.getUpdatedAt() != null){
+            kastomer.setUpdatedAt(broski.getUpdatedAt());
+        }
 
         customerStorage.put(id, kastomer);
 
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber());
+        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
 
         return response;
     }
@@ -140,6 +153,8 @@ public class CustomerService {
         response.setFullName(fullName);
         response.setEmail(email);
         response.setPhoneNumber(phoneNumber);
+        // response.setCreatedAt(createdAt);
+        // response.setUpdatedAt(updatedAt);
 
         return response;
     }
