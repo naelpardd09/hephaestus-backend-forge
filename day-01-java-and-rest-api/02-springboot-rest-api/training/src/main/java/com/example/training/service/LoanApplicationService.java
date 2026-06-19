@@ -65,6 +65,7 @@ public class LoanApplicationService {
     }
 
     //approve khusus manager >999jt
+    //jadi supaya 999jt keatas -> di-approve manager
     public String approveByManager(Long id) {
         LoanApplication loan = loanStorage.get(id);
 
