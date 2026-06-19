@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 @Data
 public class LoanApplication {
     private Long id;
-    private Long kastomerId;
+    private Long customerId;
     private BigDecimal loanAmount;
     private int tenorMonth;
     private String purpose;
@@ -12,10 +12,10 @@ public class LoanApplication {
 
     public LoanApplication(){}
 
-    public LoanApplication(Long id, Long kastomerId, BigDecimal loanAmount, int tenorMonth, String purpose,
+    public LoanApplication(Long id, Long customerId, BigDecimal loanAmount, int tenorMonth, String purpose,
             String status) {
         this.id = id;
-        this.kastomerId = kastomerId;
+        this.customerId = customerId;
         this.loanAmount = loanAmount;
         this.tenorMonth = tenorMonth;
         this.purpose = purpose;

@@ -6,7 +6,6 @@ import com.example.training.model.*;
 import java.time.ZonedDateTime;
 import java.util.*;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.stereotype.Service;
 
 import com.example.training.exception.CustomerNotFoundException;
@@ -67,81 +66,81 @@ public class CustomerService {
 
     // Method ini untuk mengambil satu data Customer berdasarkan ID.
     // Kalau customer dengan ID tersebut tidak ditemukan, block if-nya kosong sehingga tidak ada penanganan error,
-    // dan kode akan lanjut jalan dan menyebabkan NullPointerException saat mengakses kastomer yang null
+    // dan kode akan lanjut jalan dan menyebabkan NullPointerException saat mengakses customer yang null
     public CustomerResponse getCustomerById(@PathVariable Long id) throws CustomerNotFoundException {
-        Customer kastomer = customerStorage.get(id);
+        Customer customer = customerStorage.get(id);
 
-        if(kastomer == null) {
+        if(customer == null) {
             throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " +id, null);
         }
 
         CustomerResponse response = new CustomerResponse();
-        response.setId(kastomer.getId());
-        response.setFullName(kastomer.getFullName());
-        response.setEmail(kastomer.getEmail());
-        response.setPhoneNumber(kastomer.getPhoneNumber());
-        response.setCreatedAt(kastomer.getCreatedAt());
-        response.setUpdatedAt(kastomer.getUpdatedAt());
+        response.setId(customer.getId());
+        response.setFullName(customer.getFullName());
+        response.setEmail(customer.getEmail());
+        response.setPhoneNumber(customer.getPhoneNumber());
+        response.setCreatedAt(customer.getCreatedAt());
+        response.setUpdatedAt(customer.getUpdatedAt());
         return response;
     }
 
     
     public CustomerResponse deleteCustomer(long id) throws CustomerNotFoundException {
-        Customer kastomer = customerStorage.get(id);
-        if (kastomer == null) {
+        Customer customer = customerStorage.get(id);
+        if (customer == null) {
             throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " + id, null);
             // throw new CustomerNotFoundException(String.format("Customer not found with id: %s", id), null, null);
         }
         
         customerStorage.remove(id);
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
+        CustomerResponse response = new CustomerResponse(customer.getId(), customer.getFullName(), customer.getEmail(), customer.getPhoneNumber(), customer.getCreatedAt(), customer.getUpdatedAt());
         return response;
     }
     public CustomerResponse updateCustomer(@PathVariable Long id, CreateCustomerRequest entity) throws CustomerNotFoundException {
-        Customer kastomer = customerStorage.get(id);
+        Customer customer = customerStorage.get(id);
 
-        if(kastomer == null) {
+        if(customer == null) {
             throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer not found with id: " + id, null);
         }
-        kastomer.setFullName(entity.getFullName());
-        kastomer.setEmail(entity.getEmail());
-        kastomer.setPhoneNumber(entity.getPhoneNumber());
-        kastomer.setCreatedAt(ZonedDateTime.now());
-        kastomer.setUpdatedAt(ZonedDateTime.now());
-        customerStorage.put(id, kastomer);
+        customer.setFullName(entity.getFullName());
+        customer.setEmail(entity.getEmail());
+        customer.setPhoneNumber(entity.getPhoneNumber());
+        customer.setCreatedAt(ZonedDateTime.now());
+        customer.setUpdatedAt(ZonedDateTime.now());
+        customerStorage.put(id, customer);
 
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
+        CustomerResponse response = new CustomerResponse(customer.getId(), customer.getFullName(), customer.getEmail(), customer.getPhoneNumber(), customer.getCreatedAt(), customer.getUpdatedAt());
 
         return response;
         
     }
 
     public CustomerResponse patchCustomer(@PathVariable Long id, PatchCustomerRequest broski) {
-        Customer kastomer = customerStorage.get(id);
+        Customer customer = customerStorage.get(id);
 
-        if(kastomer == null) {
+        if(customer == null) {
             throw new CustomerNotFoundException("CUSTOMER_NOT_FOUND", "Customer dengan id " + id + "tidak ditemukan", null);
 
         }
         if(broski.getFullName() != null){
-            kastomer.setFullName(broski.getFullName());
+            customer.setFullName(broski.getFullName());
         }
         if(broski.getEmail() != null){
-            kastomer.setEmail(broski.getEmail());
+            customer.setEmail(broski.getEmail());
         }
         if(broski.getPhoneNumber() != null){
-            kastomer.setPhoneNumber(broski.getPhoneNumber());
+            customer.setPhoneNumber(broski.getPhoneNumber());
         }
         if(broski.getCreatedAt() != null){
-            kastomer.setCreatedAt(broski.getCreatedAt());
+            customer.setCreatedAt(broski.getCreatedAt());
         }
         if(broski.getUpdatedAt() != null){
-            kastomer.setUpdatedAt(broski.getUpdatedAt());
+            customer.setUpdatedAt(broski.getUpdatedAt());
         }
 
-        customerStorage.put(id, kastomer);
+        customerStorage.put(id, customer);
 
-        CustomerResponse response = new CustomerResponse(kastomer.getId(), kastomer.getFullName(), kastomer.getEmail(), kastomer.getPhoneNumber(), kastomer.getCreatedAt(), kastomer.getUpdatedAt());
+        CustomerResponse response = new CustomerResponse(customer.getId(), customer.getFullName(), customer.getEmail(), customer.getPhoneNumber(), customer.getCreatedAt(), customer.getUpdatedAt());
 
         return response;
     }

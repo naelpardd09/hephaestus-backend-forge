@@ -1,5 +1,6 @@
 package com.example.training.service;
 
+import com.example.training.dto.CreateLoanApplicationRequest;
 import com.example.training.dto.LoanApplicationResponse;
 import com.example.training.model.LoanApplication;
 import org.springframework.stereotype.Service;
@@ -13,58 +14,47 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class LoanApplicationService {
-    //@Service berfungsi untuk ngasitau Spring kalo class ini tuh komponen Service
-    //yang bakal diinject ke controller.
-    //loanStorage ini kayak customerStorage di app samping, nah HashMap ini
-    //sebagai database localnya.
-    //disini key nya itu id, valuenya object daripada LoanApplication.
-    //atomic long itu untuk generated id random (auto increment)
+
     private final Map<Long, LoanApplication> loanStorage = new HashMap<>();
     private final AtomicLong idCounter = new AtomicLong(1);
+    private static final BigDecimal MANAGER_APPROVAL_MINIMUM = new BigDecimal("999999999");
 
-    //method ini nerima map berisi string dan object krn JSON tanpa DTO otomatis di-parse Spring jd map
-    public LoanApplicationResponse createLoanApplication(Map<String, Object> body) {
-        Long id = idCounter.getAndIncrement(); //ngambil nilai curren tid lalu lgsg dinaikin, spy id gak duplikat
+    public LoanApplicationResponse createLoanApplication(CreateLoanApplicationRequest request) {
+        Long id = idCounter.getAndIncrement();
 
-        // body.get("customer_id") return Object, jadi kita cast ke Number dulu
-        // lalu .longValue() untuk dapat Long-nya
-        Long customerId = ((Number) body.get("customer_id")).longValue();
+        LoanApplication loan = new LoanApplication(
+                id,
+                request.getCustomerId(),
+                request.getLoanAmount(),
+                request.getTenorMonth(),
+                request.getPurpose(),
+                "SUBMITTED"
+        );
 
-        BigDecimal loanAmount = new BigDecimal(body.get("loan_amount").toString());
-
-        int tenorMonth = ((Number) body.get("tenor_month")).intValue();
-
-        String purpose = (String) body.get("purpose");
-
-        LoanApplication loan = new LoanApplication(id, customerId, loanAmount, tenorMonth, purpose, "SUBMITTED");
         loanStorage.put(id, loan);
-
         return toResponse(loan);
-        //semua value Map bertipe Object, mknya perlu di-cast, angka -> Number dlu
-        //baru .longValue() atau .intValue(), sedangkan loan_amount via .toString() ke BigDecimal
-        //Status di hc kan submitted krn loan yg bru dibuat mulai dari status ini.
     }
 
-    public List<LoanApplicationResponse> getAllLoanApplications() {
+    public List<LoanApplicationResponse> getAllLoanApplications(String status, Long customerId) {
         List<LoanApplicationResponse> result = new ArrayList<>();
+
         for (LoanApplication loan : loanStorage.values()) {
+            if (status != null && !loan.getStatus().equalsIgnoreCase(status)) {
+                continue;
+            }
+            if (customerId != null && !loan.getCustomerId().equals(customerId)) {
+                continue;
+            }
             result.add(toResponse(loan));
         }
-        return result;
-        //simplenya ni method ngambil all value HashMap, diconvert 1by1
-        //dari model LoanApplication ke LoanApplicationResponse sblm ke controller.
-        //kita gak lgsg return si modelnya krn model itu kan gbs lgsg digituin, hrs via dto
 
+        return result;
     }
 
     public LoanApplicationResponse getLoanApplicationById(Long id) {
         LoanApplication loan = loanStorage.get(id);
         if (loan == null) return null;
         return toResponse(loan);
-        //ini tuh sama kek atas, kalo atas GETALL, kalo itu GET by ID. Kalo diatas
-        //ada looping for, disini pake ifelse, jd misal loannya null/gaada, dia
-        //ngereturn null, TAPI semisal ga null, dia ngereturn ke method toResponse
-        //toResponse dijelasin dibwh
     }
 
     public LoanApplicationResponse approveLoanApplication(Long id) {
@@ -73,11 +63,21 @@ public class LoanApplicationService {
         loan.setStatus("APPROVED");
         return toResponse(loan);
     }
-    //dua method atas bawah ini kurleb sama, yg atas nge-approve, yg bawah 
-    //nge-reject. mirip sama method getLoanApplicationById (cari data by ID,
-    //lalu ngubah statusnya). karena si loanStorage itu nyimpen referensi object
-    //kita gaperlu pake .put lagi, lgsg aja abis setStatus() si objek dlm mapnya itu
-    //keupdate.
+
+    //approve khusus manager >999jt
+    public String approveByManager(Long id) {
+        LoanApplication loan = loanStorage.get(id);
+
+        if (loan == null) {
+            return "NOT_FOUND";
+        }
+        if(loan.getLoanAmount().compareTo(MANAGER_APPROVAL_MINIMUM)<=0){
+            return "BELOW_MINIMUM";
+        }
+        loan.setStatus("APPROVED");
+        return null;
+    }
+
     public LoanApplicationResponse rejectLoanApplication(Long id) {
         LoanApplication loan = loanStorage.get(id);
         if (loan == null) return null;
@@ -85,13 +85,38 @@ public class LoanApplicationService {
         return toResponse(loan);
     }
 
-    // method ini simpel tp berfungsi utk ngonvert model ke dto. jadi
-    //semua method diatas ckp sekali panggil aja toResponse() nanti auto convert
-    //private krn untuk internal class aja.
+    // Cancel hanya boleh dilakukan kalau status masih SUBMITTED.
+    // Kalau sudah APPROVED atau REJECTED, tidak bisa dicancel — return null
+    // dengan alasan berbeda, jadi kita pakai String sebagai sinyal ke controller.
+    // Kalau loan tidak ditemukan → return "NOT_FOUND"
+    // Kalau status bukan SUBMITTED → return "INVALID_STATUS"
+    // Kalau berhasil → return null dan loan sudah terupdate (kita cek via getLoanApplicationById)
+    public String cancelLoanApplication(Long id) {
+        LoanApplication loan = loanStorage.get(id);
+
+        if (loan == null) {
+            return "NOT_FOUND";
+        }
+
+        // Loan yang sudah diproses tidak bisa dicancel
+        if (!loan.getStatus().equals("SUBMITTED")) {
+            return "INVALID_STATUS";
+        }
+
+        loan.setStatus("CANCELLED");
+        return null; // null artinya sukses
+    }
+
+    // Getter terpisah untuk ambil response setelah cancel berhasil
+    // dipanggil controller setelah cancelLoanApplication return null (sukses)
+    public LoanApplicationResponse getCancelledLoan(Long id) {
+        return toResponse(loanStorage.get(id));
+    }
+
     private LoanApplicationResponse toResponse(LoanApplication loan) {
         return new LoanApplicationResponse(
                 loan.getId(),
-                loan.getKastomerId(),
+                loan.getCustomerId(),
                 loan.getLoanAmount(),
                 loan.getTenorMonth(),
                 loan.getPurpose(),

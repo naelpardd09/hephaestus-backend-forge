@@ -13,9 +13,10 @@ public class AuthContext {
     // Static block ini dijalankan sekali saat class pertama kali di-load.
     // Di sinilah kita daftarkan semua dummy user sesuai tabel di exercise.
     static {
-        TOKEN_MAP.put("token-admin",    new User("mulanjameela",    "dhani",    "ADMIN",    "token-admin"));
-        TOKEN_MAP.put("token-staff",    new User("slank",    "duaperiode",    "STAFF",    "token-staff"));
-        TOKEN_MAP.put("token-approver", new User("changcuters", "baby123", "APPROVER", "token-approver"));
+        TOKEN_MAP.put("token-admin",    new User("joker",    "joker123",    "ADMIN",    "token-admin"));
+        TOKEN_MAP.put("token-staff",    new User("jack",    "jack123",    "STAFF",    "token-staff"));
+        TOKEN_MAP.put("token-approver", new User("queen", "queen123", "APPROVER", "token-approver"));
+        TOKEN_MAP.put("token-manager" , new User("king", "king123", "MANAGER", "token-manager"));
     }
     //TOKEN_MAP ini di-declare private static final krn datanya final dan private, spy ga terakses di map
 
