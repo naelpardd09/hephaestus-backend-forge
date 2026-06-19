@@ -1,17 +1,23 @@
 package com.example.training.controller;
+//-----
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import com.example.training.service.CustomerService;
+import com.example.training.model.User;
+import com.example.training.security.AuthContext;
+import com.example.training.security.AuthUtil;
+import com.example.training.security.RoleValidator;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import com.example.training.dto.*;
-
+//________________________________________________________
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,113 +27,187 @@ import org.springframework.web.bind.annotation.PathVariable;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
-// Class ini adalah REST Controller untuk menangani semua request HTTP yang berhubungan dengan data Customer,
-// diakses melalui base URL "/api/v3/customers"
-@Tag(name = "User", description = "Test Swagger Tag")
+@Tag(name = "Customer", description = "Customer Management API")
 @RestController
-@RequestMapping("api/v3/customers")
+@RequestMapping("/api/v1/customers") //
 public class CustomerController {
-    
-    // Deklarasi variabel customerService yang akan digunakan untuk memanggil logika bisnis Customer
+
     private final CustomerService customerService;
-    
-    // Constructor ini digunakan untuk menyuntikkan (inject) CustomerService ke dalam controller,
-    // sehingga controller bisa menggunakan fungsi-fungsi yang ada di service
+
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
-    
-    // Method ini menangani request POST ke "/api/v3/customers", fungsinya untuk membuat data Customer baru.
-    // Data customer dikirim lewat request body, lalu dikembalikan response berisi data customer yang berhasil dibuat
-    // dengan HTTP status 201 Created
-    @Operation(summary = "Post", description = "Kite unggah data")
-    @ApiResponse(responseCode = "200", description = "Berhasil lek")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
+
+    // Helper: baca token dari header → cari User-nya
+    // Kalau token tidak ada atau tidak valid, return null
+    private User resolveUser(String authHeader) {
+        String token = AuthUtil.extractToken(authHeader);
+        return AuthContext.getUserByToken(token);
+    }
+
+    // POST /api/v1/customers
+    // Yang boleh: ADMIN, STAFF. APPROVER → 403.
+    @Operation(summary = "Create Customer")
+    @ApiResponse(responseCode = "201", description = "Berhasil dibuat")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    @ApiResponse(responseCode = "403", description = "Tidak punya akses",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PostMapping
-    public ResponseEntity<CustomerResponse> createCustomer(@RequestBody @Valid CreateCustomerRequest request) {
+    public ResponseEntity<?> createCustomer(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestBody @Valid CreateCustomerRequest request) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
+        if (!RoleValidator.hasRole(user.getRole(), "ADMIN", "STAFF")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ErrorResponse.error("FORBIDDEN", "You do not have permission to access this resource", null));
+        }
+
         CustomerResponse response = customerService.createCustomer(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Method ini menangani request GET ke "/api/v3/customers", fungsinya untuk mengambil semua data Customer
-    // yang ada, lalu dikembalikan dalam bentuk List dengan HTTP status 200 OK
-    @Operation(summary = "Get", description = "Kite cari lu org punya data")
-    @ApiResponse(responseCode = "200", description = "Berhasil lek")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    // GET /api/v1/customers
+    // Semua role boleh, tapi wajib login
+    @Operation(summary = "Get All Customers")
+    @ApiResponse(responseCode = "200", description = "Berhasil")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping
-    public ResponseEntity<PageResponse<CustomerResponse>> getAllCustomer(
+    public ResponseEntity<?> getAllCustomer(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
             @RequestParam(required = false) String email,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
         return ResponseEntity.ok(customerService.getCustomers(email, page, size));
     }
 
-    // Method ini menangani request GET ke "/api/v3/customers/{id}", fungsinya untuk mengambil satu data Customer
-    // berdasarkan ID yang dikirim lewat URL, lalu dikembalikan dengan HTTP status 200 OK
-    @Operation(summary = "Get by ID", description = "Kite cari data lu pake ID")
-    @ApiResponse(responseCode = "200", description = "Berhasil Ditemukan")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
+    // GET /api/v1/customers/{id}
+    // Semua role boleh, tapi wajib login
+    @Operation(summary = "Get Customer by ID")
+    @ApiResponse(responseCode = "200", description = "Berhasil ditemukan")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    @ApiResponse(responseCode = "404", description = "Customer tidak ditemukan",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @GetMapping("/{id}")
-    public ResponseEntity<CustomerResponse> getCustomerById(@PathVariable Long id) {
-        return ResponseEntity.ok(customerService.getCustomerById(id));
+    public ResponseEntity<?> getCustomerById(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
+        // getCustomerById di service sudah throw CustomerNotFoundException
+        // yang ditangkap GlobalExceptionHandler → otomatis return 404
+        CustomerResponse response = customerService.getCustomerById(id);
+        return ResponseEntity.ok(response);
     }
 
-    //Method Change
-    @Operation(summary = "Put by ID", description = "Kite ngubah data")
-    @ApiResponse(responseCode = "200", description = "Berhasil Diganti")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
+    // PUT /api/v1/customers/{id}
+    // Yang boleh: ADMIN, STAFF
+    @Operation(summary = "Update Customer")
+    @ApiResponse(responseCode = "200", description = "Berhasil diupdate")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    @ApiResponse(responseCode = "403", description = "Tidak punya akses",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerResponse> updateCustomerById(@PathVariable Long id, @Valid @RequestBody CreateCustomerRequest entity) {
+    public ResponseEntity<?> updateCustomerById(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id,
+            @Valid @RequestBody CreateCustomerRequest entity) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
+        if (!RoleValidator.hasRole(user.getRole(), "ADMIN", "STAFF")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ErrorResponse.error("FORBIDDEN", "You do not have permission to access this resource", null));
+        }
+
         CustomerResponse response = customerService.updateCustomer(id, entity);
         return ResponseEntity.ok(response);
     }
 
-    // Method ini menangani request DELETE ke "/api/v3/customers/{id}", fungsinya untuk menghapus data Customer
-    // berdasarkan ID yang dikirim lewat URL.
-    @Operation(summary = "Delete", description = "We delete your data bro")
-    @ApiResponse(responseCode = "200", description = "Berhasil Dihapust")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
+    // DELETE /api/v1/customers/{id}
+    // Yang boleh: ADMIN saja
+    @Operation(summary = "Delete Customer")
+    @ApiResponse(responseCode = "200", description = "Berhasil dihapus")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    @ApiResponse(responseCode = "403", description = "Tidak punya akses",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @DeleteMapping("/{id}")
-    public ResponseEntity<CustomerResponse> deleteCustomerById(@PathVariable Long id) {
-        return ResponseEntity.ok(customerService.deleteCustomer(id));
+    public ResponseEntity<?> deleteCustomerById(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
+        if (!RoleValidator.hasRole(user.getRole(), "ADMIN")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ErrorResponse.error("FORBIDDEN", "You do not have permission to access this resource", null));
+        }
+
+        CustomerResponse response = customerService.deleteCustomer(id);
+        return ResponseEntity.ok(response);
     }
 
-
-    @Operation(summary = "Patch by ID", description = "We patch your data per field")
-    @ApiResponse(responseCode = "200", description = "Berhasil Diganti")
-    @ApiResponse(responseCode = "400", description = "Request Invalid",
+    // PATCH /api/v1/customers/{id}
+    // Yang boleh: ADMIN, STAFF
+    @Operation(summary = "Patch Customer")
+    @ApiResponse(responseCode = "200", description = "Berhasil dipatch")
+    @ApiResponse(responseCode = "401", description = "Token tidak valid",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "404", description = "User tidak ditemukan",
-        content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    @ApiResponse(responseCode = "500", description = "Logis lu salah",
+    @ApiResponse(responseCode = "403", description = "Tidak punya akses",
         content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     @PatchMapping("/{id}")
-    public ResponseEntity<CustomerResponse> patchCustomerById(@PathVariable Long id, @Valid @RequestBody PatchCustomerRequest broski) {
+    public ResponseEntity<?> patchCustomerById(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @PathVariable Long id,
+            @Valid @RequestBody PatchCustomerRequest broski) {
+
+        User user = resolveUser(authHeader);
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ErrorResponse.error("UNAUTHORIZED", "Authentication is required", null));
+        }
+
+        if (!RoleValidator.hasRole(user.getRole(), "ADMIN", "STAFF")) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(ErrorResponse.error("FORBIDDEN", "You do not have permission to access this resource", null));
+        }
+
         CustomerResponse response = customerService.patchCustomer(id, broski);
         return ResponseEntity.ok(response);
     }

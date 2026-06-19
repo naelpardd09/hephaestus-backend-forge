@@ -2,6 +2,8 @@ package com.example.training.model;
 
 import java.time.ZonedDateTime;
 
+import lombok.Data;
+@Data
 public class Customer {
     // nah disini kita buat basis Customer ini bakal punya apa aja var nya. 
     // misalnya dia punya id, nama lengkap, notelp, dan email. nah nanti kita buat constructor, getter dan setter nya juga.
@@ -14,28 +16,10 @@ public class Customer {
     private ZonedDateTime updatedAt;
 
     // ini constructor kosong (dia itu kayak method tapi tanpa parameter tanpa return), 
-    
-
-    public ZonedDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(ZonedDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public ZonedDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(ZonedDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     public Customer() {
     }
 
-    public Customer(Long id, String fullName, String email, String phoneNumber, ZonedDateTime createdAt, ZonedDateTime updatedAt) {
+    public Customer(Long id, String fullName, String email, String phoneNumber, ZonedDateTime createdAt, ZonedDateTime updatedAt) { //ini constructor
         this.id = id;
         this.fullName = fullName;
         this.email = email;
@@ -43,38 +27,4 @@ public class Customer {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
-    
-    public Long getId() {
-        return id;
-    }
-    
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    
 }
