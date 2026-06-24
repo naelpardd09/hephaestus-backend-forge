@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -25,10 +25,10 @@ public class PaymentTransactionResponse {
     private BigDecimal paidAmount;
 
     @JsonProperty("paid_at")
-    private LocalDateTime paidAt;
+    private ZonedDateTime paidAt;
 
     private String status;
 
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 }

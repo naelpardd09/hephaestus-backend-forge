@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -102,12 +102,12 @@ public class CustomerService {
         CustomerEntity customer = customerRepository.findById(id)
                 .orElseThrow(() -> new CustomerNotFoundException("Customer not found with id: " + id));
         
-        customer.setDeletedAt(LocalDateTime.now());
+        customer.setDeletedAt(ZonedDateTime.now());
         customerRepository.save(customer);
         
         logger.info("CUSTOMER_DELETED", "Customer soft deleted",
                 "customerId", id.toString(),
-                "deletedAt", LocalDateTime.now().toString());
+                "deletedAt", ZonedDateTime.now().toString());
     }
 
     private CustomerResponse mapToResponse(CustomerEntity entity) {

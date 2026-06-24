@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -174,7 +174,7 @@ public class LoanApplicationService {
     }
 
     @Transactional(readOnly = true)
-    public PagedResponse<LoanApplicationResponse> getLoansByDateRange(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
+    public PagedResponse<LoanApplicationResponse> getLoansByDateRange(ZonedDateTime startDate, ZonedDateTime endDate, Pageable pageable) {
         Page<LoanApplicationEntity> page = loanApplicationRepository.findByCreatedAtBetween(startDate, endDate, pageable);
         return mapToPagedResponse(page);
     }

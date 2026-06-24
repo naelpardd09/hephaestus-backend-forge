@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "customers")
@@ -34,13 +34,13 @@ public class CustomerEntity {
     private String phoneNumber;
 
     @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    private ZonedDateTime deletedAt;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 }

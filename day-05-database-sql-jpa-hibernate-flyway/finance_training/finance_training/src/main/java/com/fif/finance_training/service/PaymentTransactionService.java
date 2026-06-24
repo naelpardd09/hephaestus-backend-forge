@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -47,7 +47,7 @@ public class PaymentTransactionService {
                 .repaymentSchedule(schedule)
                 .paymentReference(request.getPaymentReference())
                 .paidAmount(request.getPaidAmount())
-                .paidAt(request.getPaidAt() != null ? request.getPaidAt() : LocalDateTime.now())
+                .paidAt(request.getPaidAt() != null ? request.getPaidAt() : ZonedDateTime.now())
                 .status(PaymentStatus.SUCCESS)
                 .build();
 

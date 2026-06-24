@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -24,8 +24,8 @@ public class CustomerResponse {
     private String phoneNumber;
 
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @JsonProperty("updated_at")
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 }

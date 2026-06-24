@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import com.fif.finance_training.entity.LoanApplicationEntity;
 import com.fif.finance_training.entity.enums.LoanStatus;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 public interface LoanApplicationRepository extends JpaRepository<LoanApplicationEntity, Long> {
 
@@ -21,7 +21,7 @@ public interface LoanApplicationRepository extends JpaRepository<LoanApplication
 
     Page<LoanApplicationEntity> findByStatus(LoanStatus loanStatus, Pageable pageable);
 
-    Page<LoanApplicationEntity> findByCreatedAtBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    Page<LoanApplicationEntity> findByCreatedAtBetween(ZonedDateTime startDate, ZonedDateTime endDate, Pageable pageable);
 
     @Query("SELECT l FROM LoanApplicationEntity l JOIN FETCH l.customer WHERE l.id = :id")
     Optional<LoanApplicationEntity> findByIdWithCustomer(@Param("id") Long id);

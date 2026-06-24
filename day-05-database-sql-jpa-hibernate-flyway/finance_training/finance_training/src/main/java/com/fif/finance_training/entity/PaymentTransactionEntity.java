@@ -6,7 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(name = "payment_transactions")
@@ -31,7 +31,7 @@ public class PaymentTransactionEntity {
     private BigDecimal paidAmount;
 
     @Column(name = "paid_at")
-    private LocalDateTime paidAt;
+    private ZonedDateTime paidAt;
 
     // UBAH BAGIAN INI: Menggunakan Enum PaymentStatus
     @Enumerated(EnumType.STRING)
@@ -40,9 +40,9 @@ public class PaymentTransactionEntity {
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 public class CreatePaymentTransactionRequest {
@@ -24,5 +24,5 @@ public class CreatePaymentTransactionRequest {
 
     @NotNull(message = "paid_at is required")
     @JsonProperty("paid_at")
-    private LocalDateTime paidAt;
+    private ZonedDateTime paidAt;
 }

@@ -10,7 +10,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import com.fif.finance_training.entity.enums.RepaymentStatus;
 @Entity
 @Table(name = "repayment_schedules") // Nama tabel di database
@@ -57,9 +57,9 @@ private RepaymentStatus status = RepaymentStatus.UNPAID; // Sama seperti sebelum
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private ZonedDateTime updatedAt;
 }
